@@ -1,6 +1,7 @@
 import { HeaderContainer, HeaderContent } from "./styles";
 
 import logoImg from '../../assets/logo.svg'
+import { SearchForm } from "../SearchForm";
 
 export function Header() {
     return (
@@ -10,6 +11,7 @@ export function Header() {
 
                 <h2>EXPLORE O UNIVERSO</h2>
                 <p>Mergulhe no domínio deslumbrante de todos os personagens clássicos que você ama - e aqueles que você descobrirá em breve!</p>
+                <SearchForm />
             </HeaderContent>
         </HeaderContainer>
     )
