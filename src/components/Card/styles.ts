@@ -16,6 +16,17 @@ export const CardContainer = styled.li`
     cursor: pointer;
     display: flex;
     border-bottom: 4px solid ${(props) => props.theme['dark-red']};
+    position: relative;
+
+    &:hover {
+      div {
+        transition: 0.2s;
+        background-color: rgba(0, 0, 0, 0.2);
+        width: 100%;
+        height: 100%;
+        position: absolute;
+      }
+    }
   }
 
   div.nameContainer {

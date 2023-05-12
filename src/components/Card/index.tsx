@@ -16,6 +16,7 @@ export function Card() {
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSu08v_06doqCP2RmvB6jZPGGw7sGCtKsgOyA&usqp=CAU"
           alt=""
         />
+        <div></div>
       </div>
       <div className="nameContainer">
         <span>Demolidor</span>
