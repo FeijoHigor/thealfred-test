@@ -16,10 +16,11 @@ export const SearchFormContainer = styled.div`
     input {
         display: flex;
         border: none;
-        background-color: ${props => props.theme['light-red']};
+        background: none;
         flex: 1;
         height: 100%;
         color: ${props => props.theme['dark-red']};
+        font-size: 1.1rem;
 
         &::placeholder {
             color: ${props => props.theme['dark-red']};
@@ -28,8 +29,14 @@ export const SearchFormContainer = styled.div`
         }
     }
 
-    img {
-        padding: 0;
-        width: 2rem;
+    svg {
+        color: ${props => props.theme['dark-red']};
+    }
+
+    @media(max-width: 400px) {
+        width: 100%;
+        height: 3rem;
+        gap: 0.5rem;
+        padding: 0 1rem;
     }
 `

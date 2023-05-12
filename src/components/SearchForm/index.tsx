@@ -1,11 +1,15 @@
 import { SearchFormContainer } from "./styles";
+import { RxMagnifyingGlass } from 'react-icons/rx'
 
-import loupImg from '../../assets/loup.svg'
+interface SearchFormProps {
+    page: string
+}
 
-export function SearchForm() {
+export function SearchForm({ page }: SearchFormProps) {
+
     return (
         <SearchFormContainer>
-            <img src={loupImg} alt="Lupa" />
+            <RxMagnifyingGlass size={page ==  'home' ? 35 : 20} />
             <input type="text" placeholder="Procure por heróis"/>
         </SearchFormContainer>
     )

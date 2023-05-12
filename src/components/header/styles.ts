@@ -30,4 +30,10 @@ export const HeaderContent = styled.div`
         text-align: center;
     }
 
+    @media(max-width: 370px) {
+        img {
+            width: 14rem;
+        }
+    }
+
 `
