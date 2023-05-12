@@ -1,11 +1,9 @@
-import { FooterContainer, FooterContent } from "./styles";
+import { FooterContainer, FooterContent } from './styles'
 
 export function Footer() {
-    return (
-        <FooterContainer>
-            <FooterContent>
-                
-            </FooterContent>
-        </FooterContainer>
-    )
+  return (
+    <FooterContainer>
+      <FooterContent></FooterContent>
+    </FooterContainer>
+  )
 }

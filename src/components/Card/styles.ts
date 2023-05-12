@@ -1,35 +1,33 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const CardContainer = styled.li`
-    
-    list-style: none;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  width: 1fr;
+  gap: 1.5rem;
+
+  div.imageContainer {
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    cursor: pointer;
     display: flex;
-    flex-direction: column;
-    width: 1fr;
-    gap: 1.5rem;
+    border-bottom: 4px solid ${(props) => props.theme['dark-red']};
+  }
 
-    div.imageContainer {
-        img {
-            width: 100%;
-            height: 100%;
-        }
+  div.nameContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-        cursor: pointer;
-        display: flex;
-        border-bottom: 4px solid ${props => props.theme['dark-red']};
+    span {
+      user-select: none;
+      cursor: pointer;
+      font-size: 1.6rem;
+      font-weight: 600;
     }
-
-    div.nameContainer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        span {
-            user-select: none;
-            cursor: pointer;
-            font-size: 1.6rem;
-            font-weight: 600;
-        }
-    }
-
+  }
 `
