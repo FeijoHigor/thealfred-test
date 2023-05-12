@@ -1,4 +1,4 @@
-import { Card } from "../../components/Card";
+import { Footer } from "../../components/Footer";
 import { Header } from "./components/Header";
 import { HeroesList } from "./components/HeroesList";
 import { ListFilters } from "./components/ListFilters";
@@ -9,6 +9,7 @@ export function Home() {
             <Header/>
             <ListFilters />
             <HeroesList />
+            <Footer />
         </>
     )
 }

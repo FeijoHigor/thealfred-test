@@ -2,14 +2,15 @@ import styled from "styled-components";
 
 export const HeroesListContainer = styled.div`
     padding: 0 1.5rem;
+    padding-bottom: 8rem;
 `
 
 export const HeroesListContent = styled.ul`
     width: 100%;
     max-width: 1120px;
 
+    padding: 1rem 0;
     margin: 0 auto;
-    padding: 0 1rem;
 
     list-style: none;
 
