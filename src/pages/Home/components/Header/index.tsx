@@ -1,7 +1,7 @@
 import { HeaderContainer, HeaderContent } from "./styles";
 
-import logoImg from '../../assets/logo.svg'
-import { SearchForm } from "../SearchForm";
+import logoImg from '../../../../assets/logo.svg'
+import { SearchForm } from "../../../../components/SearchForm";
 
 export function Header() {
     return (

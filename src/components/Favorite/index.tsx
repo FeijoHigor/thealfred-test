@@ -3,17 +3,18 @@ import { FavoriteContainer } from "./styles"
 
 interface FavoriteProps {
     isFavorite: boolean
+    size: number
 }
 
-export function Favorite({ isFavorite }: FavoriteProps) {
+export function Favorite({ isFavorite, size }: FavoriteProps) {
 
     return (
         <FavoriteContainer>
             {
                 isFavorite ?
-                    <AiFillHeart size={25}/>
+                    <AiFillHeart size={size}/>
                     :
-                    <AiOutlineHeart size={25} />
+                    <AiOutlineHeart size={size} />
             }
         </FavoriteContainer>
     )

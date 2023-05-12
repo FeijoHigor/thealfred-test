@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Filter, ListFiltersContainer, ListFiltersContent, ToggleButton } from "./styles";
 
-import { Favorite } from "../Favorite";
-import heroImg from '../../assets/hero.svg'
+import { Favorite } from '../../../../components/Favorite';
+import heroImg from '../../../../assets/hero.svg'
 
 export function ListFilters() {
 
@@ -33,7 +33,7 @@ export function ListFilters() {
                         </ToggleButton>
                     </Filter>
                     <Filter onClick={handleIsFavorite}>
-                        <Favorite isFavorite={isFavorite} />
+                        <Favorite size={25} isFavorite={isFavorite} />
                         <span>Somente favoritos</span>
                     </Filter>
                 </div>

@@ -54,6 +54,7 @@ export const Filter = styled.div`
 
 export const ToggleButton = styled.label`
     background-color: #e6e6e6;
+    cursor: pointer;
 
     width: 3.5rem;
     height: 1.8rem;
