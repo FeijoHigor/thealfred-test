@@ -2,30 +2,46 @@ import { useState } from 'react'
 import { Favorite } from '../Favorite'
 import { CardContainer } from './styles'
 
-interface CardProps {
+interface HeroInfo {
+  thumbnail: {
+    path: string
+    extension: string
+  }
   name: string
-  imgUrl: string
-  heroId: number
-  onFavorite: (heroId: number) => boolean
+  id: number
 }
 
-export function Card({ name, imgUrl, heroId, onFavorite }: CardProps) {
+interface CardProps {
+  hero: HeroInfo
+  onFavorite: (hero: HeroInfo) => boolean
+}
+
+export function Card({ hero, onFavorite }: CardProps) {
+  const favoriteHeroesId = JSON.parse(localStorage.getItem('favoriteList')).map(
+    (heroELement: HeroInfo) => {
+      return heroELement.id
+    },
+  )
+
   const [isFavorite, setIsFavorite] = useState<boolean>(
-    JSON.parse(localStorage.getItem('favoriteList')).indexOf(heroId) !== -1,
+    favoriteHeroesId.indexOf(hero.id) !== -1,
   )
 
   function handleIsFavorite() {
-    onFavorite(heroId) ? setIsFavorite(true) : setIsFavorite(false)
+    onFavorite(hero) ? setIsFavorite(true) : setIsFavorite(false)
   }
 
   return (
     <CardContainer>
-      <div className="imageContainer" title={name}>
-        <img src={imgUrl} alt={`Imagem do herói ${name}`} />
+      <div className="imageContainer" title={hero.name}>
+        <img
+          src={`${hero.thumbnail.path}.${hero.thumbnail.extension}`}
+          alt={`Imagem do herói ${hero.name}`}
+        />
         <div></div>
       </div>
       <div className="nameContainer">
-        <span title={name}>{name}</span>
+        <span title={hero.name}>{hero.name}</span>
       </div>
       <button onClick={handleIsFavorite}>
         <Favorite size={30} isFavorite={isFavorite} />

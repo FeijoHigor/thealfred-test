@@ -8,7 +8,7 @@ import {
 import { ListFilters } from '../ListFilters'
 import { PaginationButtons } from '../PaginationButton'
 
-interface HeroeInfo {
+interface HeroInfo {
   thumbnail: {
     path: string
     extension: string
@@ -18,18 +18,23 @@ interface HeroeInfo {
 }
 
 export function HeroesList() {
+  if (localStorage.getItem('favoriteList') === null) {
+    console.log('opa')
+    localStorage.setItem('favoriteList', '[]')
+  }
+
   const FiltersRef = useRef<HTMLDivElement>(null)
 
   const [orderedByName, setOrderedByName] = useState<boolean>(false)
   const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false)
 
   const [page, setPage] = useState<number>(1)
-  const [favorites, setFavorites] = useState<number[]>(
+  const [favorites, setFavorites] = useState<HeroInfo[]>(
     JSON.parse(localStorage.getItem('favoriteList')),
   )
 
   const [totalHeroes, setTotalHeroes] = useState<number>(0)
-  const [heroesList, setHeroesList] = useState<HeroeInfo[]>([])
+  const [heroesList, setHeroesList] = useState<HeroInfo[]>([])
 
   async function getHeroes() {
     const keys = {
@@ -39,39 +44,55 @@ export function HeroesList() {
       hash: 'bfb6aba61568cf5803de3f31802d9bb6',
     }
 
-    const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${keys.time_stamp}&apikey=${keys.public_key}&hash=${keys.hash}`
-    const apiParams = `&limit=20&offset=${page * 20 - 20}&orderBy=${
-      orderedByName ? '-name' : 'name'
-    }`
+    if (onlyFavorites) {
+      console.log(favorites)
+      setHeroesList(favorites)
+      setTotalHeroes(favorites.length)
+    } else {
+      setHeroesList([])
+      const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${keys.time_stamp}&apikey=${keys.public_key}&hash=${keys.hash}`
+      const apiParams = `&limit=20&offset=${page * 20 - 20}&orderBy=${
+        orderedByName ? '-name' : 'name'
+      }`
 
-    const response = await fetch(`${marvelApiUrl + apiParams}`)
+      const response = await fetch(`${marvelApiUrl + apiParams}`)
 
-    /* 
-      nameStartsWith= string digitado, esperar 0.5s para chamar a api e no minimo 3 caracteres
+      /* 
+      nameStartsWith= string digitado, esperar 0.5s para chamar a api e no minimo 3 caracteres 
     */
 
-    const data = await response.json()
+      const data = await response.json()
 
-    setTotalHeroes(data.data.total)
-    setHeroesList(data.data.results)
-  }
-
-  function handleIsFavorite(heroId: number) {
-    if (favorites.indexOf(heroId) === -1 && favorites.length < 5) {
-      console.log('favoritou')
-
-      setFavorites((prevFavorites) => [...prevFavorites, heroId])
-      return true
-    } else if (favorites.indexOf(heroId) !== -1) {
-      console.log('desfavoritou')
-
-      const newFavorites = favorites.filter((id) => heroId !== id)
-      setFavorites(newFavorites)
-      return false
+      setTotalHeroes(data.data.total)
+      setHeroesList(data.data.results)
+      console.log(data)
     }
   }
 
   console.log(favorites)
+
+  function handleIsFavorite(hero: HeroInfo) {
+    let favoriteHerosId = []
+    favoriteHerosId = favorites.map((heroFavorite) => {
+      return heroFavorite.id
+    })
+    console.log(favoriteHerosId)
+    if (favoriteHerosId.indexOf(hero.id) === -1 && favorites.length < 5) {
+      console.log('favoritou')
+
+      setFavorites((prevFavorites) => [...prevFavorites, hero])
+      return true
+    } else if (favoriteHerosId.indexOf(hero.id) !== -1) {
+      console.log('desfavoritou')
+
+      const newFavorites = favorites.filter(
+        (heroElement) => hero.id !== heroElement.id,
+      )
+      console.log(newFavorites)
+      setFavorites(newFavorites)
+      return false
+    }
+  }
 
   function handleChangePage(pageNumber: number) {
     window.scrollTo({
@@ -88,21 +109,19 @@ export function HeroesList() {
   }
 
   async function handleFavoriteListLocalStorage() {
-    if (!localStorage.getItem('favoriteList')) {
-      console.log('opa')
-      localStorage.setItem('favoriteList', JSON.stringify(favorites))
-    }
-
     localStorage.setItem('favoriteList', JSON.stringify(favorites))
   }
 
   useEffect(() => {
     handleFavoriteListLocalStorage()
+    if (onlyFavorites) {
+      getHeroes()
+    }
   }, [favorites])
 
   useEffect(() => {
     getHeroes()
-  }, [orderedByName, page])
+  }, [orderedByName, page, onlyFavorites])
 
   return (
     <HeroesListContainer ref={FiltersRef}>
@@ -115,12 +134,17 @@ export function HeroesList() {
         />
       </HeroesListHeader>
       <HeroesListContent>
-        {heroesList?.map((element: HeroeInfo) => (
+        {heroesList?.map((element: HeroInfo) => (
           <Card
             key={element.id}
-            heroId={element.id}
-            name={element.name}
-            imgUrl={element.thumbnail.path + '.' + element.thumbnail.extension}
+            hero={{
+              id: element.id,
+              name: element.name,
+              thumbnail: {
+                path: element.thumbnail.path,
+                extension: element.thumbnail.extension,
+              },
+            }}
             onFavorite={handleIsFavorite}
           />
         ))}
