@@ -2,8 +2,8 @@ import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { FavoriteContainer } from './styles'
 
 interface FavoriteProps {
-  isFavorite: boolean
   size: number
+  isFavorite: boolean
 }
 
 export function Favorite({ isFavorite, size }: FavoriteProps) {

@@ -24,6 +24,9 @@ export function HeroesList() {
   const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false)
 
   const [page, setPage] = useState<number>(1)
+  const [favorites, setFavorites] = useState<number[]>(
+    JSON.parse(localStorage.getItem('favoriteList')),
+  )
 
   const [totalHeroes, setTotalHeroes] = useState<number>(0)
   const [heroesList, setHeroesList] = useState<HeroeInfo[]>([])
@@ -51,8 +54,24 @@ export function HeroesList() {
 
     setTotalHeroes(data.data.total)
     setHeroesList(data.data.results)
-    console.log(data, 'novo resultado')
   }
+
+  function handleIsFavorite(heroId: number) {
+    if (favorites.indexOf(heroId) === -1 && favorites.length < 5) {
+      console.log('favoritou')
+
+      setFavorites((prevFavorites) => [...prevFavorites, heroId])
+      return true
+    } else if (favorites.indexOf(heroId) !== -1) {
+      console.log('desfavoritou')
+
+      const newFavorites = favorites.filter((id) => heroId !== id)
+      setFavorites(newFavorites)
+      return false
+    }
+  }
+
+  console.log(favorites)
 
   function handleChangePage(pageNumber: number) {
     window.scrollTo({
@@ -67,6 +86,19 @@ export function HeroesList() {
     type === 'name' && setOrderedByName(!orderedByName)
     type === 'favorite' && setOnlyFavorites(!onlyFavorites)
   }
+
+  async function handleFavoriteListLocalStorage() {
+    if (!localStorage.getItem('favoriteList')) {
+      console.log('opa')
+      localStorage.setItem('favoriteList', JSON.stringify(favorites))
+    }
+
+    localStorage.setItem('favoriteList', JSON.stringify(favorites))
+  }
+
+  useEffect(() => {
+    handleFavoriteListLocalStorage()
+  }, [favorites])
 
   useEffect(() => {
     getHeroes()
@@ -86,8 +118,10 @@ export function HeroesList() {
         {heroesList?.map((element: HeroeInfo) => (
           <Card
             key={element.id}
+            heroId={element.id}
             name={element.name}
             imgUrl={element.thumbnail.path + '.' + element.thumbnail.extension}
+            onFavorite={handleIsFavorite}
           />
         ))}
       </HeroesListContent>
