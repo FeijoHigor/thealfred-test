@@ -12,17 +12,19 @@ interface ListFiltersProps {
   handleSetFilters: (type: 'name' | 'favorite') => void
   isFavorite: boolean
   isChecked: boolean
+  totalHeroes: number
 }
 
 export function ListFilters({
   handleSetFilters,
   isFavorite,
   isChecked,
+  totalHeroes,
 }: ListFiltersProps) {
   return (
     <ListFiltersContainer>
       <ListFiltersContent>
-        <span>Encontrados 20 heróis</span>
+        <span>Encontrados {totalHeroes} heróis</span>
 
         <div className="filters">
           <Filter>

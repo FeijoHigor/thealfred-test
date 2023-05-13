@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Card } from '../../../../components/Card'
 import {
   HeroesListContent,
@@ -6,13 +6,27 @@ import {
   HeroesListHeader,
 } from './styles'
 import { ListFilters } from '../ListFilters'
+import { PaginationButtons } from '../PaginationButton'
+
+interface HeroeInfo {
+  thumbnail: {
+    path: string
+    extension: string
+  }
+  name: string
+  id: number
+}
 
 export function HeroesList() {
+  const FiltersRef = useRef<HTMLDivElement>(null)
+
   const [orderedByName, setOrderedByName] = useState<boolean>(false)
   const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false)
+
   const [page, setPage] = useState<number>(1)
 
-  const [heroesList, setHeroesList] = useState([])
+  const [totalHeroes, setTotalHeroes] = useState<number>(0)
+  const [heroesList, setHeroesList] = useState<HeroeInfo[]>([])
 
   async function getHeroes() {
     const keys = {
@@ -30,48 +44,46 @@ export function HeroesList() {
     const response = await fetch(`${marvelApiUrl + apiParams}`)
 
     /* 
-      orderBy=-name == Z à A
-      orderBy=name == A à Z
-      limit=20  limite de 20 personagens
-      offset=20 primeiro 0, segundo 20, terceiro 40
       nameStartsWith= string digitado, esperar 0.5s para chamar a api e no minimo 3 caracteres
     */
 
     const data = await response.json()
 
+    setTotalHeroes(data.data.total)
     setHeroesList(data.data.results)
-    console.log(data.data.results, 'novo resultado')
+    console.log(data, 'novo resultado')
   }
 
   function handleChangePage(pageNumber: number) {
+    window.scrollTo({
+      top: FiltersRef.current?.offsetTop,
+      behavior: 'smooth',
+    })
     setPage(pageNumber)
+  }
+
+  function handleSetFilters(type: 'name' | 'favorite') {
+    setPage(1)
+    type === 'name' && setOrderedByName(!orderedByName)
+    type === 'favorite' && setOnlyFavorites(!onlyFavorites)
   }
 
   useEffect(() => {
     getHeroes()
   }, [orderedByName, page])
 
-  function handleSetFilters(type: 'name' | 'favorite') {
-    console.log(`name: ${orderedByName}; favorite: ${onlyFavorites}`)
-    setPage(1)
-    if (type === 'name') {
-      setOrderedByName(!orderedByName)
-    } else if (type === 'favorite') {
-      setOnlyFavorites(!onlyFavorites)
-    }
-  }
-
   return (
-    <HeroesListContainer>
+    <HeroesListContainer ref={FiltersRef}>
       <HeroesListHeader>
         <ListFilters
           handleSetFilters={handleSetFilters}
           isFavorite={onlyFavorites}
           isChecked={orderedByName}
+          totalHeroes={totalHeroes}
         />
       </HeroesListHeader>
       <HeroesListContent>
-        {heroesList.map((element, index) => (
+        {heroesList?.map((element: HeroeInfo) => (
           <Card
             key={element.id}
             name={element.name}
@@ -79,16 +91,11 @@ export function HeroesList() {
           />
         ))}
       </HeroesListContent>
-      <div>
-        <button
-          disabled={page === 1}
-          onClick={() => handleChangePage(page - 1)}
-        >
-          {page - 1}
-        </button>
-        <button disabled>{page}</button>
-        <button onClick={() => handleChangePage(page + 1)}>{page + 1}</button>
-      </div>
+      <PaginationButtons
+        currentPage={page}
+        onChangePage={handleChangePage}
+        totalHeroes={totalHeroes}
+      />
     </HeroesListContainer>
   )
 }

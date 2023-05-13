@@ -16,16 +16,16 @@ export function Card({ name, imgUrl }: CardProps) {
 
   return (
     <CardContainer>
-      <div className="imageContainer">
+      <div className="imageContainer" title={name}>
         <img src={imgUrl} alt="" />
         <div></div>
       </div>
       <div className="nameContainer">
-        <span>{name}</span>
-        <span onClick={handleIsFavorite}>
-          <Favorite size={30} isFavorite={isFavorite} />
-        </span>
+        <span title={name}>{name}</span>
       </div>
+      <button onClick={handleIsFavorite}>
+        <Favorite size={30} isFavorite={isFavorite} />
+      </button>
     </CardContainer>
   )
 }

@@ -43,6 +43,7 @@ export const Filter = styled.div`
   align-items: center;
   justify-content: center;
 
+  user-select: none;
   cursor: pointer;
   gap: 0.7rem;
 
