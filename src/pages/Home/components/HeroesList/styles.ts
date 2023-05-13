@@ -30,3 +30,6 @@ export const HeroesListContent = styled.ul`
     grid-template-columns: repeat(1, 1fr);
   }
 `
+export const HeroesListHeader = styled.header`
+  width: 100%;
+`

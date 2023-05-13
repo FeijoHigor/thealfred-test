@@ -2,7 +2,7 @@ import { SearchFormContainer } from './styles'
 import { RxMagnifyingGlass } from 'react-icons/rx'
 
 interface SearchFormProps {
-  page: string
+  page: 'home' | 'hero'
 }
 
 export function SearchForm({ page }: SearchFormProps) {

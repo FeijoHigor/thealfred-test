@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import {
   Filter,
   ListFiltersContainer,
@@ -9,19 +8,17 @@ import {
 import { Favorite } from '../../../../components/Favorite'
 import heroImg from '../../../../assets/hero.svg'
 
-export function ListFilters() {
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [isFilterByName, setFilterByName] = useState(false)
+interface ListFiltersProps {
+  handleSetFilters: (type: 'name' | 'favorite') => void
+  isFavorite: boolean
+  isChecked: boolean
+}
 
-  function handleIsFavorite() {
-    setIsFavorite(!isFavorite)
-  }
-
-  function handleFilterByName() {
-    console.log(isFilterByName)
-    setFilterByName(!isFilterByName)
-  }
-
+export function ListFilters({
+  handleSetFilters,
+  isFavorite,
+  isChecked,
+}: ListFiltersProps) {
   return (
     <ListFiltersContainer>
       <ListFiltersContent>
@@ -31,12 +28,16 @@ export function ListFilters() {
           <Filter>
             <img src={heroImg} alt="Ícone de herói" />
             <span>Ordenar por nome - A/Z</span>
-            <ToggleButton onClick={handleFilterByName}>
-              <input type="checkbox" />
+            <ToggleButton>
+              <input
+                type="checkbox"
+                onChange={() => handleSetFilters('name')}
+                checked={isChecked}
+              />
               <span />
             </ToggleButton>
           </Filter>
-          <Filter onClick={handleIsFavorite}>
+          <Filter onClick={() => handleSetFilters('favorite')}>
             <Favorite size={25} isFavorite={isFavorite} />
             <span>Somente favoritos</span>
           </Filter>
