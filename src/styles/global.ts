@@ -1,6 +1,10 @@
 import { createGlobalStyle } from 'styled-components'
 
-export const GlobalStyle = createGlobalStyle`
+interface GlobalStyleProps {
+  page: 'home' | 'hero'
+}
+
+export const GlobalStyle = createGlobalStyle<GlobalStyleProps>`
     * {
         margin: 0;
         padding: 0;
@@ -13,6 +17,8 @@ export const GlobalStyle = createGlobalStyle`
 
     body {
         color: ${(props) => props.theme['dark-gray']};
+        background-color: ${(props) =>
+          props.page === 'home' ? 'white' : props.theme['light-green']};
         -webkit-font-smoothing: antialiased;
         position: relative;
         min-height: 100vh;

@@ -1,6 +1,6 @@
 import { SearchFormContainer, SearchHeroCard } from './styles'
 import { RxMagnifyingGlass } from 'react-icons/rx'
-import { ChangeEvent, useState, useEffect, useRef } from 'react'
+import { ChangeEvent, useState, useEffect, useRef, useCallback } from 'react'
 
 interface HeroInfo {
   thumbnail: {
@@ -27,12 +27,14 @@ export function SearchForm({ page }: SearchFormProps) {
     setDigit(event.target.value)
   }
 
-  function handleFoundHeroes(heroesList: HeroInfo[]) {
-    setFoundHeroes(heroesList)
-    console.log(foundHeroes)
-  }
+  const handleFoundHeroes = useCallback(
+    (heroesList: HeroInfo[]) => {
+      setFoundHeroes(heroesList)
+    },
+    [setFoundHeroes],
+  )
 
-  async function getDigitedHeroes() {
+  const getDigitedHeroes = useCallback(async () => {
     if (digit.length > 2) {
       const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${
         import.meta.env.VITE_TIME_STAMP
@@ -49,7 +51,7 @@ export function SearchForm({ page }: SearchFormProps) {
       console.log('search', data.data.results)
       handleFoundHeroes(data.data.results)
     }
-  }
+  }, [digit, handleFoundHeroes])
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -57,11 +59,11 @@ export function SearchForm({ page }: SearchFormProps) {
       getDigitedHeroes()
     }, 500)
     return () => clearInterval(debounce)
-  }, [digit])
+  }, [digit, getDigitedHeroes])
 
   return (
     <>
-      <SearchFormContainer isFocus={isInputFocus}>
+      <SearchFormContainer isFocus={isInputFocus} page={page}>
         <div className={`inputBox ${isInputFocus && 'focus'}`}>
           <RxMagnifyingGlass size={page === 'home' ? 35 : 20} />
           <input

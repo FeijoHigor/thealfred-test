@@ -13,15 +13,15 @@ interface HeroInfo {
 
 interface CardProps {
   hero: HeroInfo
-  onFavorite: (hero: HeroInfo) => boolean
+  onFavorite: (hero: HeroInfo) => boolean | undefined
 }
 
 export function Card({ hero, onFavorite }: CardProps) {
-  const favoriteHeroesId = JSON.parse(localStorage.getItem('favoriteList')).map(
-    (heroELement: HeroInfo) => {
-      return heroELement.id
-    },
-  )
+  const favoriteHeroesId = JSON.parse(
+    localStorage.getItem('favoriteList') || '[]',
+  ).map((heroELement: HeroInfo) => {
+    return heroELement.id
+  })
 
   const [isFavorite, setIsFavorite] = useState<boolean>(
     favoriteHeroesId.indexOf(hero.id) !== -1,

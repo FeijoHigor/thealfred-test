@@ -1,16 +1,31 @@
 import styled from 'styled-components'
 
-export const SearchFormContainer = styled.div`
-  width: 90%;
-  height: 3.5rem;
-  background-color: ${(props) => props.theme['light-red']};
+interface SearchFormContainerProps {
+  isFocus: boolean
+  page: 'home' | 'hero'
+}
+
+export const SearchFormContainer = styled.div<SearchFormContainerProps>`
+  width: ${(props) => (props.page === 'hero' ? '40%' : '100%')};
+  max-width: ${(props) => (props.page === 'hero' ? '750px' : '100%')};
+  height: ${(props) => (props.page === 'hero' ? '2.5rem' : '3.5rem')};
+  background-color: ${(props) =>
+    props.page === 'hero' ? 'white' : props.theme['light-red']};
   margin: 4rem auto;
   border-radius: ${(props) => (props.isFocus ? ' 2rem 2rem 0 0' : '2rem')};
   padding: 0 1.5rem;
 
-  position: relative;
+  position: ${(props) => (props.page === 'hero' ? 'absolute' : 'relative')};
   display: flex;
   align-items: center;
+
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  @media (max-width: 770px) {
+    width: ${(props) => (props.page === 'hero' ? '90%' : '')};
+    top: ${(props) => (props.page === 'hero' ? '5rem' : '0')};
+  }
 
   .inputBox {
     gap: 2rem;
@@ -63,7 +78,8 @@ export const SearchFormContainer = styled.div`
     left: 0;
     transform: translate(0, 100%);
 
-    background-color: ${(props) => props.theme['light-red']};
+    background-color: ${(props) =>
+      props.page === 'home' ? props.theme['light-red'] : 'white'};
 
     &::-webkit-scrollbar {
       width: 5px;
@@ -86,8 +102,8 @@ export const SearchFormContainer = styled.div`
   }
 
   @media (max-width: 400px) {
-    width: 100%;
-    height: 3rem;
+    width: ${(props) => (props.page === 'home' ? '100%' : '90%')};
+    height: ${(props) => (props.page === 'home' ? '3rem' : '2.5rem')};
     gap: 0.5rem;
     padding: 0 1rem;
   }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Card } from '../../../../components/Card'
 import {
   HeroesListContent,
@@ -29,13 +29,13 @@ export function HeroesList() {
 
   const [page, setPage] = useState<number>(1)
   const [favorites, setFavorites] = useState<HeroInfo[]>(
-    JSON.parse(localStorage.getItem('favoriteList')),
+    JSON.parse(localStorage.getItem('favoriteList') || '[]'),
   )
 
   const [totalHeroes, setTotalHeroes] = useState<number>(0)
   const [heroesList, setHeroesList] = useState<HeroInfo[]>([])
 
-  async function getHeroes() {
+  const getHeroes = useCallback(async () => {
     if (onlyFavorites) {
       setHeroesList(favorites)
       setTotalHeroes(favorites.length)
@@ -57,6 +57,20 @@ export function HeroesList() {
       setTotalHeroes(data.data.total)
       setHeroesList(data.data.results)
     }
+  }, [onlyFavorites, favorites, page, orderedByName])
+
+  function handleChangePage(pageNumber: number) {
+    window.scrollTo({
+      top: FiltersRef.current?.offsetTop,
+      behavior: 'smooth',
+    })
+    setPage(pageNumber)
+  }
+
+  function handleSetFilters(type: 'name' | 'favorite') {
+    setPage(1)
+    type === 'name' && setOrderedByName(!orderedByName)
+    type === 'favorite' && setOnlyFavorites(!onlyFavorites)
   }
 
   function handleIsFavorite(hero: HeroInfo) {
@@ -76,34 +90,20 @@ export function HeroesList() {
     }
   }
 
-  function handleChangePage(pageNumber: number) {
-    window.scrollTo({
-      top: FiltersRef.current?.offsetTop,
-      behavior: 'smooth',
-    })
-    setPage(pageNumber)
-  }
-
-  function handleSetFilters(type: 'name' | 'favorite') {
-    setPage(1)
-    type === 'name' && setOrderedByName(!orderedByName)
-    type === 'favorite' && setOnlyFavorites(!onlyFavorites)
-  }
-
-  async function handleFavoriteListLocalStorage() {
+  const handleFavoriteListLocalStorage = useCallback(() => {
     localStorage.setItem('favoriteList', JSON.stringify(favorites))
-  }
+  }, [favorites])
 
   useEffect(() => {
     handleFavoriteListLocalStorage()
     if (onlyFavorites) {
       getHeroes()
     }
-  }, [favorites])
+  }, [favorites, handleFavoriteListLocalStorage, getHeroes, onlyFavorites])
 
   useEffect(() => {
     getHeroes()
-  }, [orderedByName, page, onlyFavorites])
+  }, [orderedByName, page, onlyFavorites, getHeroes])
 
   return (
     <HeroesListContainer ref={FiltersRef}>

@@ -1,7 +1,12 @@
+import { Header } from './components/Header'
+import { HeroPageContainer } from './sytles'
+import { GlobalStyle } from '../../styles/global'
+
 export function Hero() {
   return (
-    <>
-      <h1>Opa</h1>
-    </>
+    <HeroPageContainer>
+      <GlobalStyle page="hero" />
+      <Header />
+    </HeroPageContainer>
   )
 }
