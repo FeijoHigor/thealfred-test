@@ -19,7 +19,6 @@ interface HeroInfo {
 
 export function HeroesList() {
   if (localStorage.getItem('favoriteList') === null) {
-    console.log('opa')
     localStorage.setItem('favoriteList', '[]')
   }
 
@@ -37,58 +36,41 @@ export function HeroesList() {
   const [heroesList, setHeroesList] = useState<HeroInfo[]>([])
 
   async function getHeroes() {
-    const keys = {
-      time_stamp: 1683928003,
-      public_key: '49a5aaa364c25ac478f5240183592f49',
-      private_key: '13903d42443972ff625a8b2276f7f0e4201568b5',
-      hash: 'bfb6aba61568cf5803de3f31802d9bb6',
-    }
-
     if (onlyFavorites) {
-      console.log(favorites)
       setHeroesList(favorites)
       setTotalHeroes(favorites.length)
     } else {
       setHeroesList([])
-      const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${keys.time_stamp}&apikey=${keys.public_key}&hash=${keys.hash}`
+      const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${
+        import.meta.env.VITE_TIME_STAMP
+      }&apikey=${import.meta.env.VITE_PUBLIC_KEY}&hash=${
+        import.meta.env.VITE_HASH
+      }`
       const apiParams = `&limit=20&offset=${page * 20 - 20}&orderBy=${
         orderedByName ? '-name' : 'name'
       }`
 
       const response = await fetch(`${marvelApiUrl + apiParams}`)
 
-      /* 
-      nameStartsWith= string digitado, esperar 0.5s para chamar a api e no minimo 3 caracteres 
-    */
-
       const data = await response.json()
 
       setTotalHeroes(data.data.total)
       setHeroesList(data.data.results)
-      console.log(data)
     }
   }
-
-  console.log(favorites)
 
   function handleIsFavorite(hero: HeroInfo) {
     let favoriteHerosId = []
     favoriteHerosId = favorites.map((heroFavorite) => {
       return heroFavorite.id
     })
-    console.log(favoriteHerosId)
     if (favoriteHerosId.indexOf(hero.id) === -1 && favorites.length < 5) {
-      console.log('favoritou')
-
       setFavorites((prevFavorites) => [...prevFavorites, hero])
       return true
     } else if (favoriteHerosId.indexOf(hero.id) !== -1) {
-      console.log('desfavoritou')
-
       const newFavorites = favorites.filter(
         (heroElement) => hero.id !== heroElement.id,
       )
-      console.log(newFavorites)
       setFavorites(newFavorites)
       return false
     }
