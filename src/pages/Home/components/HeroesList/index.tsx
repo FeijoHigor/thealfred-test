@@ -72,7 +72,7 @@ export function HeroesList() {
     if (!onlyFavorites) {
       getHeroes()
     }
-  }, [onlyFavorites])
+  }, [getHeroes, onlyFavorites])
 
   useEffect(() => {
     if (onlyFavorites) {
@@ -100,14 +100,7 @@ export function HeroesList() {
           heroesList.map((element: HeroInfo) => (
             <Card
               key={element.id}
-              hero={{
-                id: element.id,
-                name: element.name,
-                thumbnail: {
-                  path: element.thumbnail.path,
-                  extension: element.thumbnail.extension,
-                },
-              }}
+              hero={element}
               onFavorite={handleIsFavorite}
             />
           ))
