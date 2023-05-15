@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef, useCallback, useContext } from 'react'
 import { Card } from '../../../../components/Card'
 import {
   HeroesListContent,
@@ -7,6 +7,7 @@ import {
 } from './styles'
 import { ListFilters } from '../ListFilters'
 import { PaginationButtons } from '../PaginationButton'
+import { FavoriteContext } from '../../../../contexts/FavoriteContext'
 
 interface HeroInfo {
   thumbnail: {
@@ -18,29 +19,19 @@ interface HeroInfo {
 }
 
 export function HeroesList() {
-  if (localStorage.getItem('favoriteList') === null) {
-    localStorage.setItem('favoriteList', '[]')
-  }
+  const { favoriteHeroes, handleIsFavorite } = useContext(FavoriteContext)
 
   const FiltersRef = useRef<HTMLDivElement>(null)
 
   const [orderedByName, setOrderedByName] = useState<boolean>(false)
   const [onlyFavorites, setOnlyFavorites] = useState<boolean>(false)
-
   const [page, setPage] = useState<number>(1)
-  const [favorites, setFavorites] = useState<HeroInfo[]>(
-    JSON.parse(localStorage.getItem('favoriteList') || '[]'),
-  )
 
   const [totalHeroes, setTotalHeroes] = useState<number>(0)
   const [heroesList, setHeroesList] = useState<HeroInfo[]>([])
 
   const getHeroes = useCallback(async () => {
-    if (onlyFavorites) {
-      setHeroesList(favorites)
-      setTotalHeroes(favorites.length)
-    } else {
-      setHeroesList([])
+    if (!onlyFavorites) {
       const marvelApiUrl = `https://gateway.marvel.com/v1/public/characters?ts=${
         import.meta.env.VITE_TIME_STAMP
       }&apikey=${import.meta.env.VITE_PUBLIC_KEY}&hash=${
@@ -53,13 +44,13 @@ export function HeroesList() {
       const response = await fetch(`${marvelApiUrl + apiParams}`)
 
       const data = await response.json()
+      console.log('data', data)
 
       if (data.code === 200) {
         setTotalHeroes(data.data.total)
         setHeroesList(data.data.results)
-        console.log(heroesList)
       } else {
-        console.log(data.code)
+        console.log(data.code, 'putz')
       }
     }
   }, [onlyFavorites, page, orderedByName])
@@ -78,37 +69,22 @@ export function HeroesList() {
     type === 'favorite' && setOnlyFavorites(!onlyFavorites)
   }
 
-  function handleIsFavorite(hero: HeroInfo) {
-    let favoriteHerosId = []
-    favoriteHerosId = favorites.map((heroFavorite) => {
-      return heroFavorite.id
-    })
-    if (favoriteHerosId.indexOf(hero.id) === -1 && favorites.length < 5) {
-      setFavorites((prevFavorites) => [...prevFavorites, hero])
-      return true
-    } else if (favoriteHerosId.indexOf(hero.id) !== -1) {
-      const newFavorites = favorites.filter(
-        (heroElement) => hero.id !== heroElement.id,
-      )
-      setFavorites(newFavorites)
-      return false
-    }
-  }
-
-  const handleFavoriteListLocalStorage = useCallback(() => {
-    localStorage.setItem('favoriteList', JSON.stringify(favorites))
-  }, [favorites])
-
   useEffect(() => {
-    handleFavoriteListLocalStorage()
-    if (onlyFavorites) {
+    if (!onlyFavorites) {
       getHeroes()
     }
-  }, [favorites, handleFavoriteListLocalStorage, getHeroes, onlyFavorites])
+  }, [onlyFavorites])
+
+  useEffect(() => {
+    if (onlyFavorites) {
+      setHeroesList(favoriteHeroes)
+      setTotalHeroes(favoriteHeroes.length)
+    }
+  }, [favoriteHeroes, onlyFavorites])
 
   useEffect(() => {
     getHeroes()
-  }, [orderedByName, page, onlyFavorites, getHeroes])
+  }, [orderedByName, page, getHeroes])
 
   return (
     <HeroesListContainer ref={FiltersRef}>
@@ -121,20 +97,22 @@ export function HeroesList() {
         />
       </HeroesListHeader>
       <HeroesListContent>
-        {heroesList?.map((element: HeroInfo) => (
-          <Card
-            key={element.id}
-            hero={{
-              id: element.id,
-              name: element.name,
-              thumbnail: {
-                path: element.thumbnail.path,
-                extension: element.thumbnail.extension,
-              },
-            }}
-            onFavorite={handleIsFavorite}
-          />
-        ))}
+        {heroesList.length > 0
+          ? heroesList.map((element: HeroInfo) => (
+              <Card
+                key={element.id}
+                hero={{
+                  id: element.id,
+                  name: element.name,
+                  thumbnail: {
+                    path: element.thumbnail.path,
+                    extension: element.thumbnail.extension,
+                  },
+                }}
+                onFavorite={handleIsFavorite}
+              />
+            ))
+          : 'Nenhum herói encontrado'}
       </HeroesListContent>
       <PaginationButtons
         currentPage={page}

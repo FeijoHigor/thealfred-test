@@ -127,7 +127,7 @@ export function HeroInfo() {
         extension: data.data.results[0].thumbnail.extension,
       },
       lastReleases: comicsData.data.results,
-      rating: Math.floor(Math.random() * 5 + 1),
+      rating: Math.floor(Math.random() * 5 + 1), // Do not have rating on API (não tem avaliação na API)
       isFavorite: false,
     }
 
