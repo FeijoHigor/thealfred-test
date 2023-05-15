@@ -96,8 +96,6 @@ export function HeroInfo() {
 
   const { handleIsFavorite, favoriteHeroesId } = useContext(FavoriteContext)
 
-  const [isFavorite, setIsFavorite] = useState<boolean>(false)
-
   const [heroDetails, setHeroDetails] = useState<HeroDetails>(heroDefaultObject)
 
   const getHero = useCallback(async () => {
@@ -141,17 +139,7 @@ export function HeroInfo() {
 
   useEffect(() => {
     getHero()
-    setIsFavorite(favoriteHeroesId.indexOf(Number(heroId)) !== -1)
-  }, [getHero])
-
-  function handleClickOnFavorite() {
-    const canFavorite = handleIsFavorite({
-      id: heroDetails.id,
-      name: heroDetails.name,
-      thumbnail: heroDetails.thumbnail,
-    })
-    setIsFavorite(canFavorite || false)
-  }
+  }, [getHero, heroId])
 
   return (
     <HeroInfoContainer>
@@ -161,8 +149,19 @@ export function HeroInfo() {
           <Section>
             <header>
               <h2>{heroDetails.name}</h2>
-              <span onClick={handleClickOnFavorite}>
-                <Favorite size={40} isFavorite={isFavorite} />
+              <span
+                onClick={() =>
+                  handleIsFavorite({
+                    id: heroDetails.id,
+                    name: heroDetails.name,
+                    thumbnail: heroDetails.thumbnail,
+                  })
+                }
+              >
+                <Favorite
+                  size={40}
+                  isFavorite={favoriteHeroesId.indexOf(heroDetails.id) !== -1}
+                />
               </span>
             </header>
             <p>
