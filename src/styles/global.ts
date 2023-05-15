@@ -1,6 +1,10 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
-export const GlobalStyle = createGlobalStyle`
+interface GlobalStyleProps {
+  page: 'home' | 'hero'
+}
+
+export const GlobalStyle = createGlobalStyle<GlobalStyleProps>`
     * {
         margin: 0;
         padding: 0;
@@ -9,13 +13,15 @@ export const GlobalStyle = createGlobalStyle`
 
     :focus {
         outline: 0;
-        box-shadow: 0 0 0 2px ${props => props.theme['dark-red']};
     }
 
     body {
-        background-color: white;
-        color: ${props => props.theme['dark-gray']};
+        color: ${(props) => props.theme['dark-gray']};
+        background-color: ${(props) =>
+          props.page === 'home' ? 'white' : props.theme['light-green']};
         -webkit-font-smoothing: antialiased;
+        position: relative;
+        min-height: 100vh;
     }
 
     body, input, button {
