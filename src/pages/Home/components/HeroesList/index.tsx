@@ -44,7 +44,6 @@ export function HeroesList() {
       const response = await fetch(`${marvelApiUrl + apiParams}`)
 
       const data = await response.json()
-      console.log('data', data)
 
       if (data.code === 200) {
         setTotalHeroes(data.data.total)

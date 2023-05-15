@@ -1,7 +1,16 @@
 import { SearchFormContainer, SearchHeroCard } from './styles'
 import { RxMagnifyingGlass } from 'react-icons/rx'
-import { ChangeEvent, useState, useEffect, useRef, useCallback } from 'react'
+import {
+  ChangeEvent,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useContext,
+} from 'react'
 import { Link } from 'react-router-dom'
+import { FavoriteContext } from '../../contexts/FavoriteContext'
+import { Favorite } from '../Favorite'
 
 interface HeroInfo {
   thumbnail: {
@@ -18,6 +27,8 @@ interface SearchFormProps {
 
 export function SearchForm({ page }: SearchFormProps) {
   const inputRef = useRef(null)
+  const { handleIsFavorite, favoriteHeroesId } = useContext(FavoriteContext)
+
   const [isInputFocus, setIsInputFocus] = useState<boolean>(false)
 
   const [digit, setDigit] = useState<string>('')
@@ -54,6 +65,10 @@ export function SearchForm({ page }: SearchFormProps) {
     }
   }, [digit, handleFoundHeroes])
 
+  function handleClickFavorite(hero: HeroInfo) {
+    handleIsFavorite(hero)
+  }
+
   useEffect(() => {
     const debounce = setTimeout(() => {
       setFoundHeroes([])
@@ -87,16 +102,26 @@ export function SearchForm({ page }: SearchFormProps) {
           </span>
           {foundHeroes.length > 0
             ? foundHeroes.map((foundedHero) => (
-                <SearchHeroCard
-                  key={foundedHero.id}
-                  onClick={() => console.log('opa', foundedHero.id)}
-                >
-                  <Link to={`/hero/${foundedHero.id}`}></Link>
-                  <img
-                    src={`${foundedHero.thumbnail.path}.${foundedHero.thumbnail.extension}`}
-                    alt=""
-                  />
-                  <span className="heroName">{foundedHero.name}</span>
+                <SearchHeroCard key={foundedHero.id}>
+                  <div>
+                    <Link to={`/hero/${foundedHero.id}`}></Link>
+                    <img
+                      src={`${foundedHero.thumbnail.path}.${foundedHero.thumbnail.extension}`}
+                      alt=""
+                    />
+                    <span className="heroName">{foundedHero.name}</span>
+                  </div>
+                  <span
+                    className="favoriteButton"
+                    onClick={() => handleClickFavorite(foundedHero)}
+                  >
+                    <Favorite
+                      isFavorite={
+                        favoriteHeroesId.indexOf(foundedHero.id) !== -1
+                      }
+                      size={35}
+                    />
+                  </span>
                 </SearchHeroCard>
               ))
             : ''}

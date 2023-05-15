@@ -115,28 +115,38 @@ export const SearchHeroCard = styled.div`
   cursor: pointer;
   border-radius: 0.5rem;
   position: relative;
-
-  gap: 0 1.5rem;
+  justify-content: space-between;
 
   a {
     width: 100%;
     height: 100%;
     position: absolute;
+    z-index: 1;
   }
 
-  img {
-    width: 5rem;
-    max-height: 5rem;
-    object-position: center;
-    object-fit: cover;
-    padding: 0;
-    border-radius: 0.5rem;
-    background: ${(props) => props.theme['dark-gray']};
+  .favoriteButton {
+    z-index: 2;
   }
 
-  .heroName {
-    font-size: 1.2rem;
-    color: ${(props) => props.theme['dark-gray']};
+  div {
+    display: flex;
+    align-items: center;
+    gap: 0 1.5rem;
+
+    img {
+      width: 5rem;
+      max-height: 5rem;
+      object-position: center;
+      object-fit: cover;
+      padding: 0;
+      border-radius: 0.5rem;
+      background: ${(props) => props.theme['dark-gray']};
+    }
+
+    .heroName {
+      font-size: 1.2rem;
+      color: ${(props) => props.theme['dark-gray']};
+    }
   }
 
   &:hover {

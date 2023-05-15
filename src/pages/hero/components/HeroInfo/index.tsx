@@ -94,13 +94,9 @@ export function HeroInfo() {
     thumbnail: { path: '', extension: '' },
   }
 
-  const { favoriteHeroes, handleIsFavorite } = useContext(FavoriteContext)
+  const { handleIsFavorite, favoriteHeroesId } = useContext(FavoriteContext)
 
   const [isFavorite, setIsFavorite] = useState<boolean>(false)
-
-  const favoriteHeroesId = favoriteHeroes.map((hero) => {
-    return hero.id
-  })
 
   const [heroDetails, setHeroDetails] = useState<HeroDetails>(heroDefaultObject)
 

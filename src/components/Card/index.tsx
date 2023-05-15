@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useContext } from 'react'
 import { Favorite } from '../Favorite'
 import { CardContainer } from './styles'
 import { Link } from 'react-router-dom'
+import { FavoriteContext } from '../../contexts/FavoriteContext'
 
 interface HeroInfo {
   thumbnail: {
@@ -18,19 +19,7 @@ interface CardProps {
 }
 
 export function Card({ hero, onFavorite }: CardProps) {
-  const favoriteHeroesId = JSON.parse(
-    localStorage.getItem('favoriteList') || '[]',
-  ).map((heroELement: HeroInfo) => {
-    return heroELement.id
-  })
-
-  const [isFavorite, setIsFavorite] = useState<boolean>(
-    favoriteHeroesId.indexOf(hero.id) !== -1,
-  )
-
-  function handleIsFavorite() {
-    onFavorite(hero) ? setIsFavorite(true) : setIsFavorite(false)
-  }
+  const { favoriteHeroesId } = useContext(FavoriteContext)
 
   return (
     <CardContainer>
@@ -44,8 +33,11 @@ export function Card({ hero, onFavorite }: CardProps) {
       <div className="nameContainer">
         <span title={hero.name}>{hero.name}</span>
       </div>
-      <button onClick={handleIsFavorite}>
-        <Favorite size={30} isFavorite={isFavorite} />
+      <button onClick={() => onFavorite(hero)}>
+        <Favorite
+          size={30}
+          isFavorite={favoriteHeroesId.indexOf(hero.id) !== -1}
+        />
       </button>
     </CardContainer>
   )

@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from 'react'
+import { createContext, useState, ReactNode, useEffect } from 'react'
 
 interface HeroInfo {
   thumbnail: {
@@ -13,6 +13,7 @@ interface FavoriteContextType {
   favoriteHeroes: HeroInfo[]
   setFavoriteHeroes: (favoritesArray: HeroInfo[]) => void
   handleIsFavorite: (hero: HeroInfo) => boolean | undefined
+  favoriteHeroesId: number[]
 }
 
 export const FavoriteContext = createContext({} as FavoriteContextType)
@@ -28,18 +29,23 @@ export function FavoriteContextProvider({
     JSON.parse(localStorage.getItem('favoriteList') || '[]'),
   )
 
+  const [favoriteHeroesId, setFavoriteHeroesId] = useState<number[]>([])
+
   function handleIsFavorite(hero: HeroInfo) {
-    let favoriteHerosId = []
-    favoriteHerosId = favoriteHeroes.map((heroFavorite) => {
+    let favoriteHeroesIdArray = []
+    favoriteHeroesIdArray = favoriteHeroes.map((heroFavorite) => {
       return heroFavorite.id
     })
-    if (favoriteHerosId.indexOf(hero.id) === -1 && favoriteHeroes.length < 5) {
+    if (
+      favoriteHeroesIdArray.indexOf(hero.id) === -1 &&
+      favoriteHeroes.length < 5
+    ) {
       setFavoriteHeroes((prevFavorites) => {
         handleFavoriteListLocalStorage([...prevFavorites, hero])
         return [...prevFavorites, hero]
       })
       return true
-    } else if (favoriteHerosId.indexOf(hero.id) !== -1) {
+    } else if (favoriteHeroesIdArray.indexOf(hero.id) !== -1) {
       const newFavorites = favoriteHeroes.filter(
         (heroElement) => hero.id !== heroElement.id,
       )
@@ -53,9 +59,22 @@ export function FavoriteContextProvider({
     localStorage.setItem('favoriteList', JSON.stringify(heroesArray))
   }
 
+  useEffect(() => {
+    const favoriteHeroesIdArray = favoriteHeroes.map((e) => {
+      return e.id
+    })
+
+    setFavoriteHeroesId(favoriteHeroesIdArray)
+  }, [favoriteHeroes])
+
   return (
     <FavoriteContext.Provider
-      value={{ favoriteHeroes, setFavoriteHeroes, handleIsFavorite }}
+      value={{
+        favoriteHeroes,
+        favoriteHeroesId,
+        setFavoriteHeroes,
+        handleIsFavorite,
+      }}
     >
       {children}
     </FavoriteContext.Provider>
