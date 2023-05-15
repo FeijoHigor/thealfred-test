@@ -18,6 +18,16 @@ import { Favorite } from '../../../../components/Favorite'
 import { LastReleases } from '../LastReleases'
 import { useCallback, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { Rating } from '../../../../components/Rating'
+
+interface Comic {
+  id: number
+  title: string
+  thumbnail: {
+    path: string
+    extension: string
+  }
+}
 
 interface HeroDetails {
   id: number
@@ -32,12 +42,7 @@ interface HeroDetails {
     path: string
     extension: string
   }
-  lastReleases: [
-    {
-      title: string
-      img: string
-    },
-  ]
+  lastReleases: Comic[]
 }
 
 export function HeroInfo() {
@@ -81,14 +86,12 @@ export function HeroInfo() {
     isFavorite: false,
     lastReleases: [
       {
+        id: 0,
         title: '',
-        img: '',
+        thumbnail: { path: '', extension: '' },
       },
     ],
-    thumbnail: {
-      path: '',
-      extension: '',
-    },
+    thumbnail: { path: '', extension: '' },
   }
   const [heroDetails, setHeroDetails] = useState<HeroDetails>(heroDefaultObject)
 
@@ -123,7 +126,9 @@ export function HeroInfo() {
         path: data.data.results[0].thumbnail.path,
         extension: data.data.results[0].thumbnail.extension,
       },
-      lastReleases: [],
+      lastReleases: comicsData.data.results,
+      rating: Math.floor(Math.random() * 5 + 1),
+      isFavorite: false,
     }
 
     setHeroDetails(formatedHero)
@@ -167,7 +172,7 @@ export function HeroInfo() {
             </Infos>
             <HeroRating>
               <SpanInfoType>Rating: </SpanInfoType>
-              <div>estrelas</div>
+              <Rating rating={heroDetails.rating} />
             </HeroRating>
             <LastComic>
               <SpanInfoType>Último quadrinho: </SpanInfoType>
@@ -181,7 +186,7 @@ export function HeroInfo() {
             />
           </ImgSection>
         </Main>
-        <LastReleases />
+        <LastReleases lastReleasesArray={heroDetails.lastReleases} />
       </HeroInfoContent>
     </HeroInfoContainer>
   )
