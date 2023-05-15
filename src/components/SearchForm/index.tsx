@@ -1,6 +1,7 @@
 import { SearchFormContainer, SearchHeroCard } from './styles'
 import { RxMagnifyingGlass } from 'react-icons/rx'
 import { ChangeEvent, useState, useEffect, useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 
 interface HeroInfo {
   thumbnail: {
@@ -73,7 +74,7 @@ export function SearchForm({ page }: SearchFormProps) {
             onChange={(event) => handleDigit(event)}
             value={digit}
             onFocus={() => setIsInputFocus(true)}
-            onBlur={() => setIsInputFocus(false)}
+            onBlur={() => setTimeout(() => setIsInputFocus(false), 500)}
           />
         </div>
         <div className={`results ${isInputFocus && 'focus'}`}>
@@ -86,7 +87,11 @@ export function SearchForm({ page }: SearchFormProps) {
           </span>
           {foundHeroes.length > 0
             ? foundHeroes.map((foundedHero) => (
-                <SearchHeroCard key={foundedHero.id}>
+                <SearchHeroCard
+                  key={foundedHero.id}
+                  onClick={() => console.log('opa', foundedHero.id)}
+                >
+                  <Link to={`/hero/${foundedHero.id}`}></Link>
                   <img
                     src={`${foundedHero.thumbnail.path}.${foundedHero.thumbnail.extension}`}
                     alt=""

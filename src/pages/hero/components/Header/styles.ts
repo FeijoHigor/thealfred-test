@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const HeaderContainer = styled.header`
-  padding: 2.5rem 0;
+  padding: 2.5rem 2rem;
 `
 
 export const HeaderContent = styled.div`

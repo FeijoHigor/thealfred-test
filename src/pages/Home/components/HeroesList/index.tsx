@@ -54,10 +54,15 @@ export function HeroesList() {
 
       const data = await response.json()
 
-      setTotalHeroes(data.data.total)
-      setHeroesList(data.data.results)
+      if (data.code === 200) {
+        setTotalHeroes(data.data.total)
+        setHeroesList(data.data.results)
+        console.log(heroesList)
+      } else {
+        console.log(data.code)
+      }
     }
-  }, [onlyFavorites, favorites, page, orderedByName])
+  }, [onlyFavorites, page, orderedByName])
 
   function handleChangePage(pageNumber: number) {
     window.scrollTo({

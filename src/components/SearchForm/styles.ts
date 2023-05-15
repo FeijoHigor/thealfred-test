@@ -6,8 +6,9 @@ interface SearchFormContainerProps {
 }
 
 export const SearchFormContainer = styled.div<SearchFormContainerProps>`
+  z-index: 3;
   width: ${(props) => (props.page === 'hero' ? '40%' : '100%')};
-  max-width: ${(props) => (props.page === 'hero' ? '750px' : '100%')};
+  max-width: ${(props) => (props.page === 'hero' ? '770px' : '100%')};
   height: ${(props) => (props.page === 'hero' ? '2.5rem' : '3.5rem')};
   background-color: ${(props) =>
     props.page === 'hero' ? 'white' : props.theme['light-red']};
@@ -113,8 +114,15 @@ export const SearchHeroCard = styled.div`
   align-items: center;
   cursor: pointer;
   border-radius: 0.5rem;
+  position: relative;
 
   gap: 0 1.5rem;
+
+  a {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
 
   img {
     width: 5rem;

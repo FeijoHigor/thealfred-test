@@ -8,6 +8,13 @@ export const CardContainer = styled.li`
   gap: 1.5rem;
   position: relative;
 
+  a {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
   div.imageContainer {
     img {
       width: 100%;
