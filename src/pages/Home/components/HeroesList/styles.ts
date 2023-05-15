@@ -18,6 +18,14 @@ export const HeroesListContent = styled.ul`
   grid-template-columns: repeat(4, 1fr);
   gap: 5.5rem 2rem;
 
+  .noHeroes {
+    font-size: 1.4rem;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-weight: 600;
+  }
+
   @media (max-width: 1200px) {
     grid-template-columns: repeat(3, 1fr);
   }

@@ -27,5 +27,14 @@ export const FiltersButtonContainer = styled.div`
     &:hover {
       opacity: 0.8;
     }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
   }
 `

@@ -97,22 +97,24 @@ export function HeroesList() {
         />
       </HeroesListHeader>
       <HeroesListContent>
-        {heroesList.length > 0
-          ? heroesList.map((element: HeroInfo) => (
-              <Card
-                key={element.id}
-                hero={{
-                  id: element.id,
-                  name: element.name,
-                  thumbnail: {
-                    path: element.thumbnail.path,
-                    extension: element.thumbnail.extension,
-                  },
-                }}
-                onFavorite={handleIsFavorite}
-              />
-            ))
-          : 'Nenhum herói encontrado'}
+        {heroesList.length > 0 ? (
+          heroesList.map((element: HeroInfo) => (
+            <Card
+              key={element.id}
+              hero={{
+                id: element.id,
+                name: element.name,
+                thumbnail: {
+                  path: element.thumbnail.path,
+                  extension: element.thumbnail.extension,
+                },
+              }}
+              onFavorite={handleIsFavorite}
+            />
+          ))
+        ) : (
+          <span className="noHeroes">Nenhum herói encontrado</span>
+        )}
       </HeroesListContent>
       <PaginationButtons
         currentPage={page}

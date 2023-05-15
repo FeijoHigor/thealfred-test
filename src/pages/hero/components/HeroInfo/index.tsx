@@ -16,9 +16,10 @@ import movieIcon from '../../../../assets/movie.svg'
 import bookIcon from '../../../../assets/book.svg'
 import { Favorite } from '../../../../components/Favorite'
 import { LastReleases } from '../LastReleases'
-import { useCallback, useState, useEffect } from 'react'
+import { useCallback, useState, useEffect, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { Rating } from '../../../../components/Rating'
+import { FavoriteContext } from '../../../../contexts/FavoriteContext'
 
 interface Comic {
   id: number
@@ -37,7 +38,6 @@ interface HeroDetails {
   movies: number
   rating: number
   lastComic: string
-  isFavorite: boolean
   thumbnail: {
     path: string
     extension: string
@@ -45,35 +45,36 @@ interface HeroDetails {
   lastReleases: Comic[]
 }
 
+function formatDate(unformDate: string) {
+  const months = [
+    'Jan.',
+    'Fev.',
+    'Mar.',
+    'Abr.',
+    'Mai.',
+    'Jun.',
+    'Jul.',
+    'Ago.',
+    'Set.',
+    'Out.',
+    'Nov.',
+    'Dez.',
+  ]
+
+  const formatedDateArray = [
+    unformDate.split('-')[2].slice(0, 2),
+    unformDate.split('-')[1],
+    unformDate.split('-')[0],
+  ]
+
+  const formatedDateString = `${formatedDateArray[0]} ${
+    months[Number(formatedDateArray[1]) - 1]
+  } ${formatedDateArray[2]} `
+
+  return formatedDateString
+}
+
 export function HeroInfo() {
-  function formatDate(unformDate: string) {
-    const months = [
-      'Jan.',
-      'Fev.',
-      'Mar.',
-      'Abr.',
-      'Mai.',
-      'Jun.',
-      'Jul.',
-      'Ago.',
-      'Set.',
-      'Out.',
-      'Nov.',
-      'Dez.',
-    ]
-
-    const formatedDateArray = [
-      unformDate.split('-')[2].slice(0, 2),
-      unformDate.split('-')[1],
-      unformDate.split('-')[0],
-    ]
-
-    const formatedDateString = `${formatedDateArray[0]} ${
-      months[Number(formatedDateArray[1]) - 1]
-    } ${formatedDateArray[2]} `
-
-    return formatedDateString
-  }
   const { heroId } = useParams()
   const heroDefaultObject = {
     id: Number(heroId),
@@ -83,7 +84,6 @@ export function HeroInfo() {
     movies: 0,
     rating: Math.floor(Math.random() * 5 + 1),
     lastComic: '',
-    isFavorite: false,
     lastReleases: [
       {
         id: 0,
@@ -93,6 +93,15 @@ export function HeroInfo() {
     ],
     thumbnail: { path: '', extension: '' },
   }
+
+  const { favoriteHeroes, handleIsFavorite } = useContext(FavoriteContext)
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(false)
+
+  const favoriteHeroesId = favoriteHeroes.map((hero) => {
+    return hero.id
+  })
+
   const [heroDetails, setHeroDetails] = useState<HeroDetails>(heroDefaultObject)
 
   const getHero = useCallback(async () => {
@@ -127,8 +136,7 @@ export function HeroInfo() {
         extension: data.data.results[0].thumbnail.extension,
       },
       lastReleases: comicsData.data.results,
-      rating: Math.floor(Math.random() * 5 + 1), // Do not have rating on API (não tem avaliação na API)
-      isFavorite: false,
+      rating: Math.floor(Math.random() * 5 + 1), // Do not have rating on API (não tem "avaliação" na API)
     }
 
     setHeroDetails(formatedHero)
@@ -137,7 +145,17 @@ export function HeroInfo() {
 
   useEffect(() => {
     getHero()
+    setIsFavorite(favoriteHeroesId.indexOf(Number(heroId)) !== -1)
   }, [getHero])
+
+  function handleClickOnFavorite() {
+    const canFavorite = handleIsFavorite({
+      id: heroDetails.id,
+      name: heroDetails.name,
+      thumbnail: heroDetails.thumbnail,
+    })
+    setIsFavorite(canFavorite || false)
+  }
 
   return (
     <HeroInfoContainer>
@@ -147,7 +165,9 @@ export function HeroInfo() {
           <Section>
             <header>
               <h2>{heroDetails.name}</h2>
-              <Favorite size={40} isFavorite={false} />
+              <span onClick={handleClickOnFavorite}>
+                <Favorite size={40} isFavorite={isFavorite} />
+              </span>
             </header>
             <p>
               {heroDetails.description.length > 0
